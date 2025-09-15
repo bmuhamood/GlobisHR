@@ -1,177 +1,426 @@
 {% load static %}
 {% load custom_filters %}
 
-<section id="contact" class="section position-relative overflow-hidden" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6, #ffffff);">
-  <!-- Bubble animations -->
-  <div class="bubbles position-absolute w-100 h-100" style="top:0; left:0; z-index:1;">
-    <span style="--i:11;"></span>
-    <span style="--i:15;"></span>
-    <span style="--i:18;"></span>
-    <span style="--i:22;"></span>
-    <span style="--i:25;"></span>
-    <span style="--i:30;"></span>
-  </div>
-
-  <div class="container position-relative" style="z-index: 2;">
-    <h2 class="section-title text-center text-white mb-5">
-      <i class="fas fa-headset me-2"></i> Contact Us
-    </h2>
-
-    <div class="row g-4">
-      <!-- Contact form -->
-      <div class="col-lg-6">
-        <div class="contact-form bg-white text-dark p-5 rounded-4 shadow-lg">
-          <h4 class="mb-4">
-            <i class="fas fa-envelope me-2 text-primary"></i> Get in Touch
-          </h4>
-          <div id="formMessage" class="mb-3"></div>
-
-          <form id="contactForm" method="post" action="{% url 'cms:contact_inquiry' %}" novalidate>
-            {% csrf_token %}
-            <div class="mb-3">
-              <label class="form-label" for="name">Full Name *</label>
-              <input id="name" name="name" class="form-control rounded-pill" type="text" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="email">Email Address *</label>
-              <input id="email" name="email" class="form-control rounded-pill" type="email" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="phone">Phone Number</label>
-              <input id="phone" name="phone" class="form-control rounded-pill" type="tel" inputmode="tel">
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="message">Message *</label>
-              <textarea id="message" name="message" class="form-control rounded-3" rows="5" required></textarea>
-            </div>
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary rounded-pill">
-                <i class="fas fa-paper-plane me-2"></i>Send Message
-              </button>
-              <button type="reset" class="btn btn-outline-light rounded-pill">Reset</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Office info + tabs + map -->
-      <div class="col-lg-6">
-        <div class="office-info bg-opacity-75 text-white p-5 rounded-4 shadow-lg">
-          <h5 class="mb-4 text-primary">
-            <i class="fas fa-building me-2"></i> Office Locations
-          </h5>
-
-          <!-- Tabs -->
-          <ul class="nav nav-pills mb-3" id="officeTabs" role="tablist">
-            {% for office in offices %}
-              {% with office.country|lower|cut:" " as office_key %}
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link {% if forloop.first %}active{% endif %}" 
-                          id="tab-{{ office_key }}" 
-                          data-office-index="{{ forloop.counter0 }}"
-                          type="button">
-                    {{ office.flag_emoji|default:"🌍" }} {{ office.country }}
-                  </button>
-                </li>
-              {% endwith %}
-            {% endfor %}
-          </ul>
-
-          <!-- Office Details -->
-          <div id="officeDetails" class="mb-3 text-dark">
-            {% for office in offices %}
-              <div class="office-panel {% if not forloop.first %}d-none{% endif %}" data-map="{{ office.google_map_link }}">
-                <h6><i class="fas fa-map-marker-alt me-2"></i>{{ office.city }}, {{ office.country }}</h6>
-                <p class="mb-1">{% for line in office.address.splitlines %}{{ line }}<br>{% endfor %}</p>
-                <p class="mb-1"><i class="fas fa-clock me-2"></i><strong>Hours:</strong> {{ office.working_hours }}</p>
-                <p class="mb-1"><i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ office.phone }}</p>
-                <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> 
-                  <a href="mailto:{{ office.email }}" class="text-dark">{{ office.email }}</a>
-                </p>
-              </div>
-            {% endfor %}
-          </div>
-
-          <!-- Map -->
-          <div id="officeMap" class="rounded overflow-hidden shadow-sm" style="min-height:250px;">
-            {% if offices %}
-              <iframe
-                id="officeMapFrame"
-                src="{{ offices.0.google_map_link }}"
-                width="100%"
-                height="100%"
-                style="border:0;"
-                allowfullscreen=""
-                loading="lazy">
-              </iframe>
-            {% endif %}
-          </div>
-
-          <small class="d-block mt-3 text-dark-50">
-            <i class="fas fa-info-circle me-1"></i> Select an office tab to view address, hours, and contact details.
-          </small>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <style>
-/* Bubble animation */
-.bubbles span {
-  position: absolute;
-  bottom: -100px;
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
-  animation: rise 20s infinite;
-}
-.bubbles span:nth-child(1) { left: 10%; animation-duration: 18s; }
-.bubbles span:nth-child(2) { left: 25%; animation-duration: 22s; }
-.bubbles span:nth-child(3) { left: 40%; animation-duration: 20s; }
-.bubbles span:nth-child(4) { left: 55%; animation-duration: 25s; }
-.bubbles span:nth-child(5) { left: 70%; animation-duration: 19s; }
-.bubbles span:nth-child(6) { left: 85%; animation-duration: 23s; }
-
-@keyframes rise {
-  0% { transform: translateY(0) scale(1); opacity: 0.5; }
-  50% { transform: translateY(-200px) scale(1.2); opacity: 0.7; }
-  100% { transform: translateY(-500px) scale(1); opacity: 0; }
+/* Contact Section Specific Styles */
+#contact {
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.9) 0%, 
+        rgba(30, 64, 175, 0.85) 50%, 
+        rgba(30, 58, 138, 0.8) 100%);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    padding: 4rem 0;
 }
 
-/* Tabs */
-#officeTabs .nav-link {
-  color: #ffffff !important;
-  cursor: pointer;
+/* Bubble Animation - Scoped to contact section */
+#contact .bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
 }
-#officeTabs .nav-link.active {
-  background-color: #1e3a8a !important;
-  color: #ffffff !important;
-  border-radius: 50px;
+
+#contact .bubbles span {
+    position: absolute;
+    bottom: -100px;
+    background: linear-gradient(45deg, 
+        rgba(255, 255, 255, 0.1), 
+        rgba(255, 255, 255, 0.2));
+    border-radius: 50%;
+    animation: contactBubbleFloat 20s infinite ease-in-out;
+}
+
+#contact .bubbles span:nth-child(1) { left: 15%; width: 40px; height: 40px; animation-duration: 18s; }
+#contact .bubbles span:nth-child(2) { left: 35%; width: 30px; height: 30px; animation-duration: 22s; animation-delay: 2s; }
+#contact .bubbles span:nth-child(3) { left: 55%; width: 50px; height: 50px; animation-duration: 20s; animation-delay: 4s; }
+#contact .bubbles span:nth-child(4) { left: 75%; width: 35px; height: 35px; animation-duration: 25s; animation-delay: 1s; }
+#contact .bubbles span:nth-child(5) { left: 85%; width: 25px; height: 25px; animation-duration: 19s; animation-delay: 3s; }
+#contact .bubbles span:nth-child(6) { left: 95%; width: 20px; height: 20px; animation-duration: 23s; animation-delay: 5s; }
+
+@keyframes contactBubbleFloat {
+    0% { transform: translateY(0px) scale(1); opacity: 0; }
+    10% { opacity: 0.6; }
+    50% { transform: translateY(-300px) scale(1.1); opacity: 0.8; }
+    100% { transform: translateY(-600px) scale(0.8); opacity: 0; }
+}
+
+/* Section Title */
+#contact .section-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #e2e8f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+#contact .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.6));
+    border-radius: 2px;
+}
+
+/* Glass Cards - Scoped to contact section */
+#contact .contact-form {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+#contact .contact-form:hover {
+    transform: translateY(-5px);
+}
+
+#contact .office-info {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+#contact .office-info:hover {
+    transform: translateY(-5px);
+}
+
+/* Form Styles - Only for contact form */
+#contact .form-label {
+    font-weight: 600;
+    color: #1e40af;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+#contact .form-control {
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+}
+
+#contact .form-control:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+    background: rgba(255, 255, 255, 1);
+    outline: none;
+}
+
+#contact .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#contact .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+#contact .btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    color: #374151;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+#contact .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.8);
+    color: #1f2937;
+}
+
+/* Office Tabs - Scoped to contact section */
+#contact #officeTabs {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    padding: 0.3rem;
+    margin-bottom: 1.5rem;
+}
+
+#contact #officeTabs .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    border: none;
+    border-radius: 20px;
+    padding: 0.6rem 1.2rem;
+    margin: 0 0.2rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+#contact #officeTabs .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#contact #officeTabs .nav-link.active {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+/* Office Details - Scoped to contact section */
+#contact #officeDetails {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#contact #officeDetails h6 {
+    color: #1e40af;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+#contact #officeDetails p {
+    margin-bottom: 0.5rem;
+    color: #374151;
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+#contact #officeDetails a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#contact #officeDetails a:hover {
+    color: #1e40af;
+}
+
+/* Map Container - Scoped to contact section */
+#contact #officeMap {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    height: 250px;
+}
+
+#contact .text-info {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 10px;
+    border-left: 3px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #contact .section-title {
+        font-size: 2.25rem;
+    }
+    
+    #contact {
+        padding: 3rem 0;
+    }
+    
+    #contact #officeTabs .nav-link {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    #contact #officeMap {
+        height: 200px;
+    }
+}
+
+/* Loading Animation */
+#contact .loading {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
 }
 </style>
 
+<section id="contact" class="section position-relative overflow-hidden">
+    <!-- Bubble animations -->
+    <div class="bubbles position-absolute w-100 h-100" style="top:0; left:0; z-index:1;">
+        <span style="--i:11;"></span>
+        <span style="--i:15;"></span>
+        <span style="--i:18;"></span>
+        <span style="--i:22;"></span>
+        <span style="--i:25;"></span>
+        <span style="--i:30;"></span>
+    </div>
+
+    <div class="container position-relative" style="z-index: 2;">
+        <h2 class="section-title text-center text-white mb-5">
+            <i class="fas fa-headset me-2"></i> Contact Us
+        </h2>
+
+        <div class="row g-4">
+            <!-- Contact form -->
+            <div class="col-lg-6">
+                <div class="contact-form text-dark p-4 shadow-lg">
+                    <h4 class="mb-4">
+                        <i class="fas fa-envelope me-2 text-primary"></i> Get in Touch
+                    </h4>
+                    <div id="formMessage" class="mb-3"></div>
+
+                    <form id="contactForm" method="post" action="{% url 'cms:contact_inquiry' %}" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label" for="name">Full Name *</label>
+                            <input id="name" name="name" class="form-control rounded-pill" type="text" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="email">Email Address *</label>
+                            <input id="email" name="email" class="form-control rounded-pill" type="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="phone">Phone Number</label>
+                            <input id="phone" name="phone" class="form-control rounded-pill" type="tel" inputmode="tel">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="message">Message *</label>
+                            <textarea id="message" name="message" class="form-control rounded-3" rows="4" required></textarea>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary rounded-pill flex-grow-1">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                            <button type="reset" class="btn btn-outline-light rounded-pill">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Office info + tabs + map -->
+            <div class="col-lg-6">
+                <div class="office-info p-4 shadow-lg">
+                    <h5 class="mb-4 text-white">
+                        <i class="fas fa-building me-2"></i> Office Locations
+                    </h5>
+
+                    <!-- Tabs -->
+                    <ul class="nav nav-pills mb-3" id="officeTabs" role="tablist">
+                        {% for office in offices %}
+                          {% with office.country|lower|cut:" " as office_key %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link {% if forloop.first %}active{% endif %}" 
+                                        id="tab-{{ office_key }}" 
+                                        data-office-index="{{ forloop.counter0 }}"
+                                        type="button">
+                                    {{ office.flag_emoji|default:"🌍" }} {{ office.country }}
+                                </button>
+                            </li>
+                          {% endwith %}
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Office Details -->
+                    <div id="officeDetails" class="mb-3 text-dark">
+                        {% for office in offices %}
+                            <div class="office-panel {% if not forloop.first %}d-none{% endif %}" data-map="{{ office.google_map_link }}">
+                                <h6><i class="fas fa-map-marker-alt me-2"></i>{{ office.city }}, {{ office.country }}</h6>
+                                <p class="mb-1">{% for line in office.address.splitlines %}{{ line }}<br>{% endfor %}</p>
+                                <p class="mb-1"><i class="fas fa-clock me-2"></i><strong>Hours:</strong> {{ office.working_hours }}</p>
+                                <p class="mb-1"><i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ office.phone }}</p>
+                                <p><i class="fas fa-envelope me-2"></i><strong>Email:</strong> 
+                                    <a href="mailto:{{ office.email }}">{{ office.email }}</a>
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Map -->
+                    <div id="officeMap" class="rounded overflow-hidden shadow-sm">
+                        {% if offices %}
+                            <iframe
+                                id="officeMapFrame"
+                                src="{{ offices.0.google_map_link }}"
+                                width="100%"
+                                height="100%"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy">
+                            </iframe>
+                        {% endif %}
+                    </div>
+
+                    <small class="text-info d-block mt-3">
+                        <i class="fas fa-info-circle me-1"></i> Select an office tab to view address, hours, and contact details.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  const tabs = document.querySelectorAll("#officeTabs .nav-link");
-  const panels = document.querySelectorAll("#officeDetails .office-panel");
-  const mapFrame = document.getElementById("officeMapFrame");
+    const tabs = document.querySelectorAll("#contact #officeTabs .nav-link");
+    const panels = document.querySelectorAll("#contact #officeDetails .office-panel");
+    const mapFrame = document.getElementById("officeMapFrame");
 
-  tabs.forEach((tab, index) => {
-    tab.addEventListener("click", function() {
-      // Remove active from all tabs
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
+    tabs.forEach((tab, index) => {
+        tab.addEventListener("click", function() {
+            // Remove active from all tabs
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
 
-      // Hide all panels
-      panels.forEach(p => p.classList.add("d-none"));
-      panels[index].classList.remove("d-none");
+            // Hide all panels
+            panels.forEach(p => p.classList.add("d-none"));
+            panels[index].classList.remove("d-none");
 
-      // Update map
-      const newMap = panels[index].dataset.map;
-      mapFrame.src = newMap;
+            // Update map
+            if (mapFrame && panels[index]) {
+                const newMap = panels[index].dataset.map;
+                if (newMap) {
+                    mapFrame.src = newMap;
+                }
+            }
+        });
     });
-  });
+
+    // Form submission handling
+    const contactForm = document.getElementById("contactForm");
+    const formMessage = document.getElementById("formMessage");
+
+    if (contactForm) {
+        contactForm.addEventListener("submit", function(e) {
+            // Let the form submit normally to Django backend
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+                submitBtn.disabled = true;
+                
+                // Re-enable button after a delay in case of validation errors
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            }
+        });
+    }
 });
 </script>

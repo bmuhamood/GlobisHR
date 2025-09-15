@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Globis HR Solutions - Professional HR Consultancy{% endblock %}</title>
+  <meta name="description" content="{% block description %}Professional HR consultancy services including recruitment, training, and HR outsourcing solutions worldwide.{% endblock %}">
+
+  <!-- CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary-light-blue:#ADD8E6;
+      --primary-white:#FFFFFF;
+      --primary-dark-blue:#003366;
+      --secondary-blue:#4A90E2;
+      --text-dark:#333333;
+      --background-light:#F8F9FA;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color:var(--text-dark);
+      line-height:1.6;
+      overflow-x:hidden;
+      background: var(--primary-white);
+    }
+
+    html{scroll-behavior:smooth}
+
+    /* Navbar */
+    .navbar{
+      background: rgba(255,255,255,0.98) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0,51,102,0.08);
+      position: fixed;
+      top:0;
+      width:100%;
+      z-index:1000;
+      transition: all .25s ease;
+    }
+    .navbar-brand{ color:var(--primary-dark-blue) !important; font-weight:700; font-size:1.25rem}
+    .nav-link{ color:var(--primary-dark-blue) !important; font-weight:500}
+    .nav-link:hover{ color:var(--secondary-blue) !important }
+
+    /* Hero */
+    .hero-section{
+      background: linear-gradient(135deg,var(--primary-light-blue),var(--primary-white));
+      min-height:92vh;
+      display:flex;
+      align-items:center;
+      padding-top:72px;
+    }
+    .hero-title{ font-size:3rem; color:var(--primary-dark-blue); font-weight:700 }
+    .hero-subtitle{ font-size:1.1rem; color:var(--text-dark) ; margin-bottom:1.25rem }
+
+    /* Buttons */
+    .btn-custom{ padding:10px 24px; border-radius:25px; font-weight:600; letter-spacing: .6px}
+    .btn-primary-custom{ background: linear-gradient(135deg,var(--primary-dark-blue),var(--secondary-blue)); color:#fff; border:0 }
+    .btn-outline-custom{ border:2px solid var(--primary-dark-blue); color:var(--primary-dark-blue); background:transparent }
+
+    /* Sections */
+    .section{ padding:70px 0 }
+    .section-title{ font-size:2rem; color:var(--primary-dark-blue); font-weight:700; text-align:center; margin-bottom:2rem }
+    .service-card, .job-card, .contact-form, .office-info, .blog-card{ border-radius:12px; background:#fff; box-shadow:0 6px 30px rgba(0,51,102,0.06); padding:1.6rem }
+
+    .service-icon{ font-size:2.2rem; color:var(--secondary-blue); margin-bottom:.75rem }
+
+    .job-badge{ background: linear-gradient(135deg,var(--primary-light-blue), rgba(173,216,230,.7)); color:var(--primary-dark-blue); padding:4px 10px; border-radius:16px; font-weight:600; font-size:.8rem }
+
+    .contact-form .form-control{ border-radius:10px; border:1px solid rgba(173,216,230,.5) }
+    .nav-tabs .nav-link{ border-radius:8px; margin-right:.6rem }
+    .nav-tabs .nav-link.active{ background:var(--primary-dark-blue); color:#fff }
+
+    /* Footer */
+    footer{ background:var(--primary-dark-blue); color:#fff; padding:2rem 0 }
+    footer a{ color:var(--primary-light-blue) }
+
+    /* Responsive tweaks */
+    @media (max-width:768px){
+      .hero-title{ font-size:1.9rem }
+      .hero-subtitle{ font-size:.98rem }
+    }
+
+    {% block extra_css %}{% endblock %}
+  </style>
+</head>
+<body>
+  {% include 'cms/partials/navbar.html' %}
+
+  {% block content %}
+  {% endblock %}
+
+  {% include 'cms/partials/footer.html' %}
+
+  <!-- SCRIPTS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  
+  <script>
+    // Initialize AOS
+    AOS.init({ once: true, duration: 650 });
+
+    // Set year in footer
+    document.addEventListener('DOMContentLoaded', function(){
+      const yearSpan = document.getElementById('year');
+      if(yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
+    });
+
+    // CSRF Token for Django forms
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    
+    const csrftoken = getCookie('csrftoken');
+
+    {% block extra_js %}{% endblock %}
+  </script>
+</body>
+</html>

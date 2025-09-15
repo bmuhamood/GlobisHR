@@ -1,0 +1,121 @@
+        <svg role="img" aria-label="HR consulting: team, documents, and analytics" viewBox="0 0 640 480" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gBlue" x1="0" x2="1">
+              <stop offset="0%" stop-color="#3B82F6"/>
+              <stop offset="100%" stop-color="#1E3A8A"/>
+            </linearGradient>
+            <linearGradient id="gSoft" x1="0" x2="1">
+              <stop offset="0%" stop-color="#E6F2FF"/>
+              <stop offset="100%" stop-color="#FFFFFF"/>
+            </linearGradient>
+            <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feOffset in="SourceAlpha" dx="0" dy="6" result="off"/>
+              <feGaussianBlur in="off" stdDeviation="10" result="blur"/>
+              <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.0  0 0 0 0 0.06  0 0 0 0 0.3  0 0 0 0.35 0" result="shadow"/>
+              <feBlend in="shadow" in2="SourceGraphic" mode="normal"/>
+            </filter>
+            <style>
+              .muted { fill: #eef6ff; }
+              .accent { fill: url(#gBlue); }
+              .stroke-soft { stroke: rgba(0,0,0,0.06); stroke-width:1.5; }
+              .person { fill: #ffffff; stroke: rgba(0,0,0,0.06); stroke-width:1.2 }
+              .icon-bg { fill: #fff; }
+              .small-text { fill:#5b6b8a; font-family: Inter, Helvetica, Arial, sans-serif; font-size:12px; }
+            </style>
+          </defs>
+
+          <!-- background panel -->
+          <rect x="16" y="16" width="608" height="448" rx="20" fill="url(#gSoft)" stroke="rgba(0,51,102,0.06)"/>
+
+          <!-- left: team group -->
+          <g transform="translate(70,110)">
+            <!-- large circle behind -->
+            <circle cx="80" cy="70" r="70" class="muted" />
+            <!-- three person icons -->
+            <g transform="translate(28,26)">
+              <!-- left person -->
+              <g transform="translate(-8,12)">
+                <circle cx="12" cy="8" r="8" class="accent" opacity="0.95"/>
+                <rect x="4" y="20" width="16" height="12" rx="3" ry="3" class="accent" opacity="0.95"/>
+              </g>
+              <!-- center person -->
+              <g transform="translate(28,0)">
+                <circle cx="12" cy="8" r="12" class="person" />
+                <rect x="2" y="26" width="20" height="14" rx="4" ry="4" class="person" />
+              </g>
+              <!-- right person -->
+              <g transform="translate(68,12)">
+                <circle cx="12" cy="8" r="8" class="accent" opacity="0.95"/>
+                <rect x="4" y="20" width="16" height="12" rx="3" ry="3" class="accent" opacity="0.95"/>
+              </g>
+            </g>
+
+            <!-- team label -->
+            <text x="0" y="140" class="small-text">Team &amp; Talent</text>
+          </g>
+
+          <!-- center: document with checklist -->
+          <g transform="translate(240,70)">
+            <!-- document card -->
+            <rect x="0" y="0" width="200" height="140" rx="8" ry="8" fill="#fff" class="stroke-soft" filter="url(#softShadow)"/>
+            <!-- header bar -->
+            <rect x="0" y="0" width="200" height="22" rx="8" ry="8" fill="url(#gBlue)" opacity="0.12"/>
+            <!-- lines (text) -->
+            <g fill="#7b8aa3" opacity="0.9">
+              <rect x="18" y="36" width="130" height="8" rx="3"/>
+              <rect x="18" y="52" width="100" height="8" rx="3"/>
+              <rect x="18" y="68" width="140" height="8" rx="3"/>
+            </g>
+            <!-- checklist items -->
+            <g transform="translate(18,92)">
+              <g transform="translate(0,0)">
+                <rect x="0" y="0" width="12" height="12" rx="2" ry="2" fill="#e6f2ff" stroke="#cfe5ff"/>
+                <path d="M2 6 L5.2 9 L10 3" stroke="#1E3A8A" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="18" y="10" class="small-text">Screening</text>
+              </g>
+              <g transform="translate(0,20)">
+                <rect x="0" y="0" width="12" height="12" rx="2" ry="2" fill="#e6f2ff" stroke="#cfe5ff"/>
+                <path d="M2 6 L5.2 9 L10 3" stroke="#1E3A8A" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="18" y="10" class="small-text">Interview</text>
+              </g>
+            </g>
+
+            <!-- magnifier icon -->
+            <g transform="translate(150,34)" opacity="0.95">
+              <circle cx="8" cy="8" r="8" fill="none" stroke="#3B82F6" stroke-width="2"/>
+              <line x1="14" y1="14" x2="20" y2="20" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+            </g>
+
+            <!-- document label -->
+            <text x="0" y="165" class="small-text">Talent screen &amp; process</text>
+          </g>
+
+          <!-- right: analytics + briefcase -->
+          <g transform="translate(470,90)">
+            <!-- small analytics card -->
+            <rect x="0" y="0" width="130" height="86" rx="8" ry="8" fill="#ffffff" class="stroke-soft" />
+            <!-- bars -->
+            <rect x="16" y="36" width="14" height="28" rx="2" fill="#cfe5ff"/>
+            <rect x="40" y="24" width="14" height="40" rx="2" fill="#93c5fd"/>
+            <rect x="64" y="12" width="14" height="52" rx="2" fill="#3B82F6"/>
+            <rect x="88" y="28" width="14" height="36" rx="2" fill="#60a5fa"/>
+            <!-- trend line -->
+            <polyline points="16,56 40,48 64,28 88,44" fill="none" stroke="#1E3A8A" stroke-width="1.6" stroke-linejoin="round" />
+            <text x="0" y="100" class="small-text">Analytics &amp; reporting</text>
+
+            <!-- briefcase icon -->
+            <g transform="translate(14,120)">
+              <rect x="0" y="0" width="102" height="64" rx="8" ry="8" fill="url(#gBlue)" />
+              <rect x="12" y="8" width="78" height="40" rx="6" ry="6" fill="#fff" opacity="0.06"/>
+              <rect x="36" y="-10" width="30" height="18" rx="4" ry="4" fill="#fff" opacity="0.12"/>
+              <rect x="36" y="4" width="30" height="6" rx="2" ry="2" fill="#fff" opacity="0.18"/>
+              <text x="0" y="86" class="small-text">HR outsourcing</text>
+            </g>
+          </g>
+
+          <!-- subtle footer tag -->
+          <g transform="translate(40,400)">
+            <rect x="0" y="0" width="200" height="36" rx="8" ry="8" fill="#fff" opacity="0.5" />
+            <text x="14" y="24" class="small-text">Recruitment • Training • Outsourcing</text>
+          </g>
+        </svg>

@@ -1,0 +1,121 @@
+{% load static %}
+
+<!-- Job Application Modal -->
+<div class="modal fade" id="applicationModal" tabindex="-1" aria-labelledby="applicationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      
+      <!-- Modal Header -->
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title fw-bold" id="applicationModalLabel">
+          <i class="fas fa-file-alt me-2 text-primary"></i> Apply for Position
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4">
+        <form id="jobApplicationForm" method="post" action="{% url 'cms:apply_job' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="row g-3">
+            
+            <!-- Name -->
+            <div class="col-md-6">
+              <label for="appName" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control rounded-3" id="appName" name="name" placeholder="John Doe" required>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label for="appEmail" class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+              <input type="email" class="form-control rounded-3" id="appEmail" name="email" placeholder="example@email.com" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="col-md-6">
+              <label for="appPhone" class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
+              <input type="tel" class="form-control rounded-3" id="appPhone" name="phone" placeholder="+971 50 123 4567" required>
+            </div>
+
+            <!-- Job Title (Read only) -->
+            <div class="col-md-6">
+              <label for="appJobTitle" class="form-label fw-semibold">Position</label>
+              <input type="text" class="form-control rounded-3 bg-light" id="appJobTitle" readonly>
+              <input type="hidden" id="appJobId" name="job_id">
+            </div>
+
+            <!-- CV Upload (Optional) -->
+            <div class="col-12">
+              <label for="appCV" class="form-label fw-semibold">Upload CV/Resume <small class="text-muted">(Optional)</small></label>
+              <input type="file" class="form-control rounded-3" id="appCV" name="cv" accept=".pdf,.doc,.docx">
+              <small class="text-muted">Accepted formats: .pdf, .doc, .docx</small>
+            </div>
+
+            <!-- Cover Letter -->
+            <div class="col-12">
+              <label for="appCoverLetter" class="form-label fw-semibold">Cover Letter</label>
+              <textarea class="form-control rounded-3" id="appCoverLetter" name="cover_letter" rows="4" placeholder="Tell us why you're a great fit..."></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer border-0 d-flex justify-content-between px-4 pb-4">
+        <button type="button" class="btn btn-light border rounded-3" data-bs-dismiss="modal">
+          <i class="fas fa-times me-2"></i> Cancel
+        </button>
+        <button type="submit" form="jobApplicationForm" class="btn btn-primary-custom rounded-3 px-4">
+          <i class="fas fa-paper-plane me-2"></i> Submit Application
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openApplicationForm(jobTitle, jobId) {
+  document.getElementById('appJobTitle').value = jobTitle;
+  document.getElementById('appJobId').value = jobId;
+  const modal = new bootstrap.Modal(document.getElementById('applicationModal'));
+  modal.show();
+}
+
+// AJAX form submission
+document.addEventListener('DOMContentLoaded', function() {
+  const jobForm = document.getElementById('jobApplicationForm');
+  if (jobForm) {
+    jobForm.addEventListener('submit', function(ev) {
+      ev.preventDefault();
+
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const formData = new FormData(this);
+
+      fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRFToken': csrftoken }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          bootstrap.Modal.getInstance(document.getElementById('applicationModal')).hide();
+          // Modern feedback: Toast
+          const toast = document.createElement('div');
+          toast.className = "toast align-items-center text-bg-success border-0 show position-fixed bottom-0 end-0 m-3";
+          toast.innerHTML = `<div class="d-flex"><div class="toast-body">${data.message}</div>
+                              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
+          document.body.appendChild(toast);
+          this.reset();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting application. Please try again.');
+      });
+    });
+  }
+});
+</script>

@@ -1,0 +1,58 @@
+{% load static %} 
+{% load custom_filters %}
+
+<section id="blog" class="section py-5" style="background:var(--background-light);">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">
+      <i class="fas fa-lightbulb me-2 text-primary"></i> Latest Insights
+    </h2>
+
+    <div class="row g-4">
+      {% for post in blog_posts %}
+        <div class="col-md-6 col-lg-4" data-aos-delay="{{ forloop.counter0|add:1|mul:80 }}">
+          <article class="blog-card h-100 shadow-sm rounded-3 overflow-hidden border-0 transition">
+            
+            <!-- Image Section -->
+            <div class="blog-image position-relative" style="height:200px; overflow:hidden;">
+              {% if post.main_image %}
+                <img src="{{ post.main_image.url }}" class="img-fluid w-100 h-100 object-fit-cover" alt="{{ post.title }}">
+              {% else %}
+                <div class="d-flex align-items-center justify-content-center w-100 h-100" style="background:linear-gradient(135deg,var(--primary-light-blue),var(--secondary-blue)); color:#fff;">
+                  <i class="fas fa-newspaper" style="font-size:3rem"></i>
+                </div>
+              {% endif %}
+              <span class="badge bg-primary position-absolute top-0 start-0 m-2">
+                <i class="fas fa-hashtag me-1"></i> Insights
+              </span>
+            </div>
+
+            <!-- Content -->
+            <div class="p-3">
+              <h5 class="fw-bold mb-2">{{ post.title }}</h5>
+              <p class="text-muted small mb-3">{{ post.content|truncatewords:15 }}</p>
+
+              <div class="d-flex justify-content-between align-items-center border-top pt-2">
+                <small class="text-muted">
+                  <i class="far fa-calendar-alt me-1"></i>{{ post.created_at|date:"M d, Y" }}
+                  <span class="ms-2"><i class="fas fa-user-edit me-1"></i>{{ post.author }}</span>
+                </small>
+                <a class="btn btn-sm btn-outline-primary rounded-pill" href="{% url 'cms:blog_detail' post.id %}">
+                  Read More <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      {% empty %}
+        <p class="text-center">No blog posts available.</p>
+      {% endfor %}
+    </div>
+
+    <!-- View All Blogs -->
+    <div class="text-center mt-5">
+      <a class="btn btn-primary-custom btn-custom rounded-pill px-4" href="{% url 'cms:blog_list' %}">
+        <i class="fas fa-briefcase me-2"></i> View All Blogs
+      </a>
+    </div>
+  </div>
+</section>

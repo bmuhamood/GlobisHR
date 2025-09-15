@@ -1,0 +1,320 @@
+{% extends 'cms/base.html' %}
+{% load static %}
+
+{% block title %}{{ about.title|default:"Globis HR Solutions - Your Trusted HR Partner" }}{% endblock %}
+
+{% block content %}
+  {% include 'cms/partials/hero.html' %}
+  {% include 'cms/partials/services.html' %}
+  {% include 'cms/partials/jobs.html' %}
+  {% include 'cms/partials/about.html' %}
+  {% include 'cms/partials/blog.html' %}
+  {% include 'cms/partials/contact.html' %}
+
+  <!-- Job Application Modal -->
+  <div class="modal fade" id="applicationModal" tabindex="-1" aria-labelledby="applicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="applicationModalLabel">Apply for Position</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="jobApplicationForm" method="post" action="{% url 'cms:apply_job' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="appName" class="form-label">Full Name *</label>
+                <input type="text" class="form-control" id="appName" name="name" required>
+              </div>
+              <div class="col-md-6">
+                <label for="appEmail" class="form-label">Email Address *</label>
+                <input type="email" class="form-control" id="appEmail" name="email" required>
+              </div>
+              <div class="col-md-6">
+                <label for="appPhone" class="form-label">Phone Number *</label>
+                <input type="tel" class="form-control" id="appPhone" name="phone" required>
+              </div>
+              <div class="col-md-6">
+                <label for="appJobId" class="form-label">Position *</label>
+                <input type="text" class="form-control" id="appJobTitle" readonly>
+                <input type="hidden" id="appJobId" name="job_id">
+              </div>
+              <div class="col-12">
+                <label for="appCV" class="form-label">Upload CV/Resume *</label>
+                <input type="file" class="form-control" id="appCV" name="cv" accept=".pdf,.doc,.docx" required>
+              </div>
+              <div class="col-12">
+                <label for="appCoverLetter" class="form-label">Cover Letter</label>
+                <textarea class="form-control" id="appCoverLetter" name="cover_letter" rows="4" placeholder="Tell us why you're perfect for this role..."></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" form="jobApplicationForm" class="btn btn-primary-custom">
+            <i class="fas fa-paper-plane me-2"></i>Submit Application
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Jobs Modal -->
+  <div class="modal fade" id="allJobsModal" tabindex="-1" aria-labelledby="allJobsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="allJobsModalLabel">All Available Positions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="jobSearch" placeholder="Search jobs...">
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="locationFilter">
+                <option value="">All Locations</option>
+                {% for job in all_jobs %}
+                  <option value="{{ job.location }}">{{ job.location }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" id="typeFilter">
+                <option value="">All Types</option>
+                <option value="full-time">Full-time</option>
+                <option value="part-time">Part-time</option>
+                <option value="contract">Contract</option>
+                <option value="remote">Remote</option>
+              </select>
+            </div>
+          </div>
+          <div id="allJobsContainer">
+            {% for job in all_jobs %}
+              <div class="job-card mb-3" data-location="{{ job.location }}" data-title="{{ job.title|lower }}">
+                <div class="row align-items-center">
+                  <div class="col-md-8">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div>
+                        <h5 class="mb-1">{{ job.title }}</h5>
+                        <p class="text-muted mb-0"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</p>
+                      </div>
+                      <span class="job-badge">Full-time</span>
+                    </div>
+                    <p class="mb-2">{{ job.description|truncatewords:20 }}</p>
+                    <small class="text-muted">Posted {{ job.posted_at|timesince }} ago</small>
+                  </div>
+                  <div class="col-md-4 text-end">
+                    <button class="btn btn-outline-primary" onclick="openApplicationForm('{{ job.title }}', {{ job.id }})">
+                      Apply Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+    <div id="successToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="fas fa-check-circle text-success me-2"></i>
+        <strong class="me-auto">Success</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Your message has been sent successfully!
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Office data from Django context
+  const offices = {{ offices_json|safe }};
+
+  // Helper functions
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function(m){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+    });
+  }
+
+  function renderOffice(key) {
+    const target = document.getElementById('officeDetails');
+    const mapWrap = document.getElementById('officeMap');
+    const o = offices[key];
+    if (!o) return;
+
+    target.innerHTML = `
+      <h6 class="mb-1">${escapeHtml(o.label)}</h6>
+      <div class="mb-2 small text-muted">
+        ${o.addressLines.map(line => `<div>${escapeHtml(line)}</div>`).join('')}
+      </div>
+      <div class="mb-1"><strong>Working hours:</strong> <span class="text-muted">${escapeHtml(o.hours)}</span></div>
+      <div class="mb-1"><strong>Phone:</strong> <a href="tel:${encodeURIComponent(o.phone)}">${escapeHtml(o.phone)}</a></div>
+      <div class="mb-0"><strong>Email:</strong> <a href="mailto:${encodeURIComponent(o.email)}">${escapeHtml(o.email)}</a></div>
+    `;
+
+    mapWrap.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('src', o.mapEmbed);
+    iframe.setAttribute('width', '100%');
+    iframe.setAttribute('height', '260');
+    iframe.setAttribute('style', 'border:0;');
+    iframe.setAttribute('loading', 'lazy');
+    iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+    iframe.setAttribute('title', `${o.label} map`);
+    mapWrap.appendChild(iframe);
+  }
+
+  // Application form functions
+  function openApplicationForm(jobTitle, jobId) {
+    document.getElementById('appJobTitle').value = jobTitle;
+    document.getElementById('appJobId').value = jobId;
+    const modal = new bootstrap.Modal(document.getElementById('applicationModal'));
+    modal.show();
+  }
+
+  function showAllJobs() {
+    const modal = new bootstrap.Modal(document.getElementById('allJobsModal'));
+    modal.show();
+  }
+
+  // Initialize when DOM loads
+  document.addEventListener('DOMContentLoaded', function(){
+    // Initial office render
+    if(Object.keys(offices).length > 0) {
+      renderOffice(Object.keys(offices)[0]);
+    }
+
+    // Office dropdown clicks
+    document.querySelectorAll('.office-select').forEach(function(el){
+      el.addEventListener('click', function(e){
+        e.preventDefault();
+        const key = el.dataset.office;
+        const tabBtn = document.querySelector(`#officeTabs button[data-office="${key}"]`);
+        if (tabBtn) {
+          const tab = new bootstrap.Tab(tabBtn);
+          tab.show();
+        }
+        renderOffice(key);
+        document.querySelector('#contact').scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    // Office tab clicks
+    document.querySelectorAll('#officeTabs button[data-office]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        const key = btn.dataset.office;
+        renderOffice(key);
+      });
+    });
+
+    // Contact form submission
+    const contactForm = document.getElementById('contactForm');
+    if(contactForm) {
+      contactForm.addEventListener('submit', function(ev){
+        ev.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch('{% url "cms:contact_inquiry" %}', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': csrftoken
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if(data.success) {
+            const toast = new bootstrap.Toast(document.getElementById('successToast'));
+            document.querySelector('#successToast .toast-body').textContent = 'Your message has been sent successfully!';
+            toast.show();
+            this.reset();
+          } else {
+            alert('Error sending message. Please try again.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error sending message. Please try again.');
+        });
+      });
+    }
+
+    // Job application form
+    const jobForm = document.getElementById('jobApplicationForm');
+    if(jobForm) {
+      jobForm.addEventListener('submit', function(ev) {
+        ev.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': csrftoken
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if(data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('applicationModal')).hide();
+            const toast = new bootstrap.Toast(document.getElementById('successToast'));
+            document.querySelector('#successToast .toast-body').textContent = 'Your application has been submitted successfully!';
+            toast.show();
+            this.reset();
+          } else {
+            alert('Error submitting application. Please try again.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error submitting application. Please try again.');
+        });
+      });
+    }
+
+    // Job filtering
+    const jobSearch = document.getElementById('jobSearch');
+    const locationFilter = document.getElementById('locationFilter');
+    const typeFilter = document.getElementById('typeFilter');
+
+    function filterJobs() {
+      const searchTerm = jobSearch ? jobSearch.value.toLowerCase() : '';
+      const locationValue = locationFilter ? locationFilter.value : '';
+      const typeValue = typeFilter ? typeFilter.value : '';
+
+      document.querySelectorAll('#allJobsContainer .job-card').forEach(card => {
+        const title = card.dataset.title || '';
+        const location = card.dataset.location || '';
+        
+        const matchesSearch = !searchTerm || title.includes(searchTerm);
+        const matchesLocation = !locationValue || location.includes(locationValue);
+        // const matchesType = !typeValue; // Add type filtering if needed
+        
+        if (matchesSearch && matchesLocation) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    if(jobSearch) jobSearch.addEventListener('input', filterJobs);
+    if(locationFilter) locationFilter.addEventListener('change', filterJobs);
+    if(typeFilter) typeFilter.addEventListener('change', filterJobs);
+  });
+</script>
+{% endblock %}

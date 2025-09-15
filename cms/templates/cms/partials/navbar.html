@@ -1,0 +1,121 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-3">
+  <div class="container">
+    <!-- Brand / Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'cms:home' %}">
+      <!-- Circular Logo -->
+      <img src="{% static 'images/logo.JPG' %}" alt="Globis Logo" class="logo me-2">
+      <span class="fw-bold text-dark-blue">Globis HR Solutions</span>
+    </a>
+
+    <!-- Toggler -->
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse" aria-controls="navCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="navCollapse">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link text-dark-blue" href="#home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark-blue" href="#about">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark-blue" href="#jobs">Careers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark-blue" href="#services">Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark-blue" href="#blog">Blog</a>
+        </li>
+
+        <!-- Dropdown for Offices -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-dark-blue" href="#" id="officesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Our Offices
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="officesDropdown">
+            {% for office in offices %}
+              <li>
+                <a class="dropdown-item office-select" href="#contact" data-office="{{ office.country|lower }}">
+                  {% if office.flag_emoji %}{{ office.flag_emoji }}{% else %}🌍{% endif %}
+                  {{ office.country }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link text-dark-blue" href="#contact">Contact</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<style>
+:root {
+  --primary-blue: #3B82F6;
+  --dark-blue: #0f172a;
+}
+
+/* Circular logo */
+.navbar-brand .logo {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-blue);
+  transition: transform 0.3s ease;
+}
+.navbar-brand .logo:hover {
+  transform: rotate(15deg) scale(1.1);
+}
+
+/* Navbar links hover */
+.navbar-nav .nav-link {
+  position: relative;
+  transition: color 0.3s, transform 0.3s;
+}
+.navbar-nav .nav-link:hover {
+  color: var(--primary-blue) !important;
+  transform: translateY(-2px);
+}
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: var(--primary-blue);
+  transition: width 0.3s;
+}
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  border: none;
+}
+.dropdown-item:hover {
+  background-color: var(--primary-blue);
+  color: #fff !important;
+}
+
+/* Toggler icon */
+.navbar-toggler {
+  outline: none;
+}
+.navbar-toggler-icon {
+  filter: invert(25%);
+}
+</style>

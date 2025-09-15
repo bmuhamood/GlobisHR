@@ -1,0 +1,48 @@
+{% load static %}
+
+<section id="about" class="section">
+  <div class="container">
+    <h2 class="section-title">About Globis HR Solutions</h2>
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <p class="lead">
+          {% if about.description %}
+            {{ about.description }}
+          {% else %}
+            With over 15 years of experience in the HR industry, we've built lasting partnerships with companies worldwide, helping them find the right talent and optimize their workforce.
+          {% endif %}
+        </p>
+        <div class="row g-3">
+          <div class="col-6 text-center">
+            <h3 class="display-5 fw-bold text-primary" data-count="{{ about.companies_served|default:500 }}">
+              {{ about.companies_served|default:"500" }}+
+            </h3>
+            <small class="d-block">Companies Served</small>
+          </div>
+          <div class="col-6 text-center">
+            <h3 class="display-5 fw-bold text-primary" data-count="{{ about.successful_placements|default:15000 }}">
+              {{ about.successful_placements|default:"15k" }}+
+            </h3>
+            <small class="d-block">Successful Placements</small>
+          </div>
+          <div class="col-6 text-center">
+            <h3 class="display-5 fw-bold text-primary" data-count="{{ about.countries_covered|default:25 }}">
+              {{ about.countries_covered|default:"25" }}+
+            </h3>
+            <small class="d-block">Countries Covered</small>
+          </div>
+          <div class="col-6 text-center">
+            <h3 class="display-5 fw-bold text-primary" data-count="{{ about.client_satisfaction|default:98 }}">
+              {{ about.client_satisfaction|default:"98" }}%
+            </h3>
+            <small class="d-block">Client Satisfaction</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 text-center">
+        <i class="fas fa-award" style="font-size:9rem;color:var(--primary-light-blue)" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+</section>

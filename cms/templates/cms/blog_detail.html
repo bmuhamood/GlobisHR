@@ -1,0 +1,248 @@
+{% extends 'cms/base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - Globis HR Solutions{% endblock %}
+
+{% block content %}
+<div style="padding-top: 80px;"></div>
+
+<section class="section">
+    <div class="container">
+        <!-- Enhanced Post Header with Modern Design -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="mb-5">
+                    <!-- Category/Tag Badge (if available) -->
+                    {% if post.category %}
+                    <span class="badge bg-primary bg-gradient rounded-pill px-3 py-2 mb-3 fs-6 fw-normal">
+                        {{ post.category }}
+                    </span>
+                    {% endif %}
+                    
+                    <!-- Modern Title with Better Typography -->
+                    <h1 class="display-4 fw-bold mb-4 lh-1" style="color: #1a1a1a; letter-spacing: -0.02em;">
+                        {{ post.title }}
+                    </h1>
+                    
+                    <!-- Enhanced Meta Information -->
+                    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-gradient rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                 style="width: 32px; height: 32px;">
+                                <i class="fas fa-user text-white" style="font-size: 14px;"></i>
+                            </div>
+                            <span class="text-muted fw-medium">{{ post.author }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-secondary bg-gradient rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                 style="width: 32px; height: 32px;">
+                                <i class="fas fa-calendar text-white" style="font-size: 14px;"></i>
+                            </div>
+                            <span class="text-muted">{{ post.created_at|date:"F j, Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Modern Divider -->
+                    <div class="position-relative mb-5">
+                        <hr class="border-0 bg-gradient" style="height: 1px; background: linear-gradient(90deg, #007bff, transparent);">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Main Image with Modern Layout -->
+        {% if post.main_image %}
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="position-relative overflow-hidden rounded-4 shadow-lg">
+                    <img src="{{ post.main_image.url }}" 
+                         class="w-100" 
+                         style="height: 400px; object-fit: cover; transition: transform 0.3s ease;" 
+                         alt="{{ post.title }}"
+                         onmouseover="this.style.transform='scale(1.02)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-10"></div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Enhanced Post Content with Better Typography -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="mb-5" style="font-size: 1.125rem; line-height: 1.8; color: #374151;">
+                    <div class="content-wrapper">
+                        {{ post.content|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modern Gallery Section -->
+        {% if post.images.all %}
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="mb-4">
+                    <h3 class="fw-bold mb-1" style="color: #1a1a1a;">Gallery</h3>
+                    <p class="text-muted mb-4">Explore more visuals from this post</p>
+                </div>
+                
+                <div id="blogImagesCarousel" class="carousel slide rounded-4 overflow-hidden shadow-lg" data-bs-ride="carousel">
+                    <!-- Carousel Indicators -->
+                    <div class="carousel-indicators">
+                        {% for image in post.images.all %}
+                        <button type="button" data-bs-target="#blogImagesCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                                {% if forloop.first %}class="active"{% endif %} aria-current="true"></button>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="carousel-inner">
+                        {% for image in post.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image.image.url }}" 
+                                 class="d-block w-100" 
+                                 style="height: 500px; object-fit: cover;" 
+                                 alt="{{ image.caption }}">
+                            {% if image.caption %}
+                            <div class="carousel-caption">
+                                <div class="bg-dark bg-opacity-75 rounded-3 px-3 py-2 d-inline-block">
+                                    <p class="mb-0 fw-medium">{{ image.caption }}</p>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Modern Carousel Controls -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#blogImagesCarousel" data-bs-slide="prev">
+                        <div class="bg-white bg-opacity-20 backdrop-blur rounded-circle p-3">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </div>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#blogImagesCarousel" data-bs-slide="next">
+                        <div class="bg-white bg-opacity-20 backdrop-blur rounded-circle p-3">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </div>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Enhanced Videos Section -->
+        {% if post.videos.all %}
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10">
+                <div class="mb-4">
+                    <h3 class="fw-bold mb-1" style="color: #1a1a1a;">Videos</h3>
+                    <p class="text-muted mb-4">Watch related video content</p>
+                </div>
+                
+                <div class="row g-4">
+                    {% for video in post.videos.all %}
+                    <div class="col-lg-6">
+                        <div class="video-card">
+                            <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm mb-3">
+                                <iframe src="{{ video.video_url }}" 
+                                        title="{{ video.caption }}" 
+                                        allowfullscreen
+                                        class="border-0"
+                                        style="transition: transform 0.3s ease;"
+                                        onmouseover="this.style.transform='scale(1.02)'"
+                                        onmouseout="this.style.transform='scale(1)'"></iframe>
+                            </div>
+                            {% if video.caption %}
+                            <div class="px-2">
+                                <p class="mb-0 text-muted fw-medium text-center">{{ video.caption }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Modern Back to Blog Button -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center pt-4 border-top">
+                    <button onclick="history.back()" class="btn btn-outline-primary btn-lg rounded-pill px-4 py-3">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Previous Page
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS for Enhanced Styling -->
+<style>
+.content-wrapper p {
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+
+.content-wrapper h1, .content-wrapper h2, .content-wrapper h3 {
+    color: #1a1a1a;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.video-card {
+    transition: transform 0.3s ease;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1);
+    width: 20px;
+    height: 20px;
+}
+
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+}
+
+/* Smooth animations */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 8%;
+    }
+}
+
+/* Loading animation for images */
+img {
+    transition: opacity 0.3s ease;
+}
+
+img:not([src]) {
+    opacity: 0;
+}
+</style>
+{% endblock %}

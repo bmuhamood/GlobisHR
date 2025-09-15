@@ -1,0 +1,175 @@
+{% load static %}
+
+<footer class="footer position-relative py-5" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fff; overflow: hidden;">
+  <!-- Animated floating shapes -->
+  <div class="footer-bubbles position-absolute w-100 h-100" style="top:0; left:0; z-index:1;">
+    <span style="--i:12;"></span>
+    <span style="--i:18;"></span>
+    <span style="--i:25;"></span>
+    <span style="--i:32;"></span>
+  </div>
+
+  <div class="container position-relative" style="z-index:2;">
+    <div class="row g-4">
+      <!-- Company Info -->
+      <div class="col-lg-4 col-md-6">
+        <h4 class="fw-bold mb-3">Globis HR Solutions</h4>
+        <p>Your trusted partner in building exceptional teams and advancing careers worldwide.</p>
+        <div class="d-flex gap-3 mt-3">
+          <a href="#" class="text-white hover-scale" aria-label="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>
+          <a href="#" class="text-white hover-scale" aria-label="Twitter"><i class="fab fa-twitter fa-2x"></i></a>
+          <a href="#" class="text-white hover-scale" aria-label="Facebook"><i class="fab fa-facebook fa-2x"></i></a>
+          <a href="#" class="text-white hover-scale" aria-label="Instagram"><i class="fab fa-instagram fa-2x"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-lg-2 col-md-6">
+        <h6 class="fw-bold mb-3">Quick Links</h6>
+        <ul class="list-unstyled">
+          <li><a href="#about" class="text-white footer-link">About Us</a></li>
+          <li><a href="#services" class="text-white footer-link">Services</a></li>
+          <li><a href="#jobs" class="text-white footer-link">Careers</a></li>
+          <li><a href="#blog" class="text-white footer-link">Blog</a></li>
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div class="col-lg-2 col-md-6">
+        <h6 class="fw-bold mb-3">Services</h6>
+        <ul class="list-unstyled">
+          {% for service in services|slice:":4" %}
+            <li><a href="#services" class="text-white footer-link">{{ service.name }}</a></li>
+          {% empty %}
+            <li><a href="#services" class="text-white footer-link">Recruitment</a></li>
+            <li><a href="#services" class="text-white footer-link">Training</a></li>
+            <li><a href="#services" class="text-white footer-link">HR Outsourcing</a></li>
+            <li><a href="#services" class="text-white footer-link">Consulting</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div class="col-lg-2 col-md-6">
+        <h6 class="fw-bold mb-3">Support</h6>
+        <ul class="list-unstyled">
+          <li><a href="#contact" class="text-white footer-link">Contact</a></li>
+          <li><a href="#" class="text-white footer-link">FAQ</a></li>
+          <li><a href="#" class="text-white footer-link">Privacy Policy</a></li>
+          <li><a href="#" class="text-white footer-link">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="col-lg-2 col-md-6">
+        <h6 class="fw-bold mb-3">Newsletter</h6>
+        <p class="small">Subscribe for updates and career insights.</p>
+        <div class="input-group">
+          <input type="email" class="form-control form-control-sm rounded-start" placeholder="Email" id="newsletterEmail">
+          <button class="btn btn-light btn-sm rounded-end text-primary" type="button" id="newsletterBtn">
+            Subscribe
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-4 border-light">
+
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <p class="mb-0">&copy; <span id="year"></span> Globis HR Solutions. All rights reserved.</p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <p class="mb-0">Empowering careers, building futures.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+.footer-link {
+  text-decoration: none; /* remove underline */
+  color: #fff;           /* default white */
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.footer-link:hover {
+  color: #fbbf24;       /* golden hover color */
+  transform: translateY(-2px); /* subtle lift */
+}
+
+/* Social icons hover */
+.hover-scale {
+  transition: transform 0.3s ease, color 0.3s ease;
+  color: #fff;
+}
+.hover-scale:hover {
+  transform: scale(1.2);
+  color: #fbbf24; /* match hover color */
+}
+
+/* Floating bubbles animation */
+.footer-bubbles span {
+  position: absolute;
+  bottom: -50px;
+  width: 30px;
+  height: 30px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+}
+.footer-bubbles span:nth-child(1) { left: 10%; animation-duration: 15s; }
+.footer-bubbles span:nth-child(2) { left: 30%; animation-duration: 18s; }
+.footer-bubbles span:nth-child(3) { left: 50%; animation-duration: 20s; }
+.footer-bubbles span:nth-child(4) { left: 70%; animation-duration: 22s; }
+.footer-bubbles span:nth-child(5) { left: 90%; animation-duration: 25s; }
+
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-100px) scale(1.2); opacity: 0.7; }
+  100% { transform: translateY(-250px) scale(1); opacity: 0; }
+}
+
+/* Newsletter input & button */
+#newsletterEmail {
+  border-right: none;
+}
+#newsletterBtn {
+  border-left: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Current year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Newsletter subscription
+  const newsletterBtn = document.getElementById('newsletterBtn');
+  const newsletterEmail = document.getElementById('newsletterEmail');
+
+  if(newsletterBtn && newsletterEmail) {
+    newsletterBtn.addEventListener('click', function() {
+      const email = newsletterEmail.value.trim();
+      if(email && email.includes('@')) {
+        const originalText = this.textContent;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        this.disabled = true;
+
+        // Simulate subscription (replace with actual endpoint)
+        setTimeout(() => {
+          this.textContent = originalText;
+          this.disabled = false;
+          newsletterEmail.value = '';
+          alert('Successfully subscribed to newsletter!');
+        }, 1500);
+      } else {
+        alert('Please enter a valid email address.');
+      }
+    });
+
+    newsletterEmail.addEventListener('keypress', function(e) {
+      if(e.key === 'Enter') newsletterBtn.click();
+    });
+  }
+});
+</script>

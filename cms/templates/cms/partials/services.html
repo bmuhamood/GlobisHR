@@ -1,0 +1,87 @@
+{% load static %}
+{% load custom_filters %}
+
+<section id="services" class="section py-5">
+  <div class="container">
+
+    <!-- Section Title -->
+    <h2 class="section-title text-center mb-5">
+      <i class="fas fa-cogs me-2 text-primary-blue"></i> Our Services
+    </h2>
+
+    <div class="row g-4">
+      {% for service in services %}
+        <div class="col-md-6 col-lg-3" data-aos-delay="{{ forloop.counter0|add:1|mul:80 }}">
+          <div class="service-card text-center h-100 p-4 rounded-3 shadow-sm transition">
+
+            <!-- Icon -->
+            <div class="service-icon-wrapper d-flex align-items-center justify-content-center mb-3 mx-auto">
+              {% if service.icon %}
+                <i class="{{ service.icon }} fa-2x"></i>
+              {% else %}
+                <i class="fas fa-briefcase fa-2x"></i>
+              {% endif %}
+            </div>
+
+            <!-- Name -->
+            <h5 class="fw-bold">{{ service.name }}</h5>
+
+            <!-- Description -->
+            <p class="small text-dark-blue">{{ service.description|truncatewords:15 }}</p>
+
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12 text-center py-5">
+          <i class="fas fa-tools fa-3x text-dark-blue mb-3"></i>
+          <h4>No services available</h4>
+          <p class="text-dark-blue">We’ll update this section with our offerings soon.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+:root {
+  --primary-blue: #3B82F6;
+  --primary-light-blue: #E0F2FF;
+  --dark-blue: #0f172a;
+}
+
+/* Service Card */
+.service-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+}
+
+/* Hover effect */
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+/* Icon wrapper */
+.service-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--primary-blue);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.service-card:hover .service-icon-wrapper {
+  background: var(--dark-blue);
+  transform: scale(1.1);
+}
+
+/* Text colors */
+.text-primary-blue {
+  color: var(--primary-blue) !important;
+}
+
+.text-dark-blue {
+  color: var(--dark-blue) !important;
+}
+</style>

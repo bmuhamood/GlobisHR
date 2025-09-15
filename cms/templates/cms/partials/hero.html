@@ -1,0 +1,123 @@
+{% load static %}
+
+<header id="home" class="hero-section position-relative text-dark">
+  <!-- Big bubbles container -->
+  <div class="bubbles">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="container py-5">
+    <div class="row align-items-center gx-5">
+      
+      <!-- Hero text -->
+      <div class="col-lg-6">
+        <h1 class="hero-title display-4 fw-bold mb-3">
+          {{ about.title|default:"Your Trusted HR Partner" }}
+        </h1>
+        <p class="hero-subtitle lead mb-4">
+          {% if about.description %}
+            {{ about.description|truncatewords:25 }}
+          {% else %}
+            Empowering businesses with exceptional talent acquisition, training, and HR outsourcing solutions worldwide.
+          {% endif %}
+        </p>
+
+        <div class="d-flex gap-3 flex-wrap">
+          <a href="#jobs" class="btn btn-primary btn-lg">
+            <i class="fas fa-search me-2"></i>Explore Careers
+          </a>
+          <a href="#contact" class="btn btn-outline-dark btn-lg">
+            <i class="fas fa-phone me-2"></i>Contact Us
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero illustration / SVG -->
+      <div class="col-lg-6 text-center mt-4 mt-lg-0">
+        <img src="{% static 'images/hr-illustration.svg' %}" alt="HR Consulting" class="img-fluid">
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<style>
+:root {
+  --primary-light-blue: #E0F2FF;
+  --primary-blue: #3B82F6;
+  --dark-blue: #1E3A8A;
+  --navy-text: #0f172a;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, var(--primary-light-blue) 0%, var(--primary-light-blue) 70%, var(--primary-blue) 85%, var(--dark-blue) 100%);
+  position: relative;
+  overflow: hidden;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  color: var(--navy-text);
+}
+
+/* Hero text */
+.hero-title, .hero-subtitle {
+  color: var(--navy-text);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--dark-blue);
+  border-color: var(--dark-blue);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+.btn-outline-dark {
+  border-color: var(--navy-text);
+  color: var(--navy-text);
+}
+.btn-outline-dark:hover {
+  background-color: rgba(0,0,50,0.1);
+}
+
+/* Big bubbles animation */
+.bubbles span {
+  position: absolute;
+  bottom: -100px;
+  border-radius: 50%;
+  background: rgba(59,130,246,0.15);
+  animation: floatUp linear infinite;
+}
+
+/* Random sizes and positions for big bubbles */
+.bubbles span:nth-child(1) {
+  left: 10%; width: 80px; height: 80px; animation-duration: 25s;
+}
+.bubbles span:nth-child(2) {
+  left: 30%; width: 100px; height: 100px; animation-duration: 30s;
+}
+.bubbles span:nth-child(3) {
+  left: 50%; width: 60px; height: 60px; animation-duration: 20s;
+}
+.bubbles span:nth-child(4) {
+  left: 70%; width: 120px; height: 120px; animation-duration: 35s;
+}
+.bubbles span:nth-child(5) {
+  left: 90%; width: 70px; height: 70px; animation-duration: 28s;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(1); opacity: 0.6; }
+  50% { transform: translateY(-200px) scale(1.2); opacity: 0.8; }
+  100% { transform: translateY(-500px) scale(1); opacity: 0; }
+}
+
+/* Ensure content is above bubbles */
+.hero-section .container {
+  position: relative;
+  z-index: 1;
+}
+</style>
